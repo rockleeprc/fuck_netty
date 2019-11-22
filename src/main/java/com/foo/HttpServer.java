@@ -30,7 +30,7 @@ public class HttpServer {
                     .handler(new LoggingHandler(LogLevel.DEBUG)) // 配置handler日志级别
                     .channel(NioServerSocketChannel.class)// 配置使用的channel
                     .childHandler(new HttpServerInitializer()); // 配置初始化器
-            ChannelFuture channelFuture = bootstrap.bind(new InetSocketAddress(port)).sync();
+            ChannelFuture channelFuture = bootstrap.bind(port).sync();
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -66,6 +66,7 @@ public class HttpServer {
 
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
+            System.out.println("4 channelRead0");
             System.out.println(msg.getClass());
 
             if (msg instanceof HttpRequest) {
@@ -85,31 +86,37 @@ public class HttpServer {
 
         @Override
         public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+            System.out.println("5 channelReadComplete");
             ctx.flush();
         }
 
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
+            System.out.println("3 channelActive");
             super.channelActive(ctx);
         }
 
         @Override
         public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+            System.out.println("2 channelRegistered");
             super.channelRegistered(ctx);
         }
 
         @Override
         public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+            System.out.println("1 handlerAdded");
             super.handlerAdded(ctx);
         }
 
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+            System.out.println("6 channelInactive");
             super.channelInactive(ctx);
         }
 
         @Override
         public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+            System.out.println("7 channelUnregistered");
             super.channelUnregistered(ctx);
         }
     }
