@@ -1,4 +1,4 @@
-package com.foo;
+package com.foo.httpserver;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -12,12 +12,10 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.CharsetUtil;
 
-import java.net.InetSocketAddress;
-
 public class HttpServer {
     public static void main(String[] args) {
         ServerBootstrap bootstrap = null;
-        EventLoopGroup boss=null;
+        EventLoopGroup boss = null;
         EventLoopGroup work = null;
         int port = 8899;
 
@@ -53,7 +51,7 @@ public class HttpServer {
         protected void initChannel(SocketChannel ch) throws Exception {
             ChannelPipeline pipeline = ch.pipeline();
             // 将组建添加到ChannelPipeline的最后
-            pipeline.addLast("httpServerCodec",new HttpServerCodec());// http 编解码
+            pipeline.addLast("httpServerCodec", new HttpServerCodec());// http 编解码
             pipeline.addLast("httpAggregator", new HttpObjectAggregator(512 * 1024)); // http 消息聚合器                                                                     512*1024为接收的最大contentlength
             pipeline.addLast("httpServerHandle", new HttpServerHandler());// 自定义请求处理器
         }
@@ -77,7 +75,7 @@ public class HttpServer {
                         HttpResponseStatus.OK,
                         content);
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");
-                response.headers().set(HttpHeaderNames.CONTENT_LENGTH,content.readableBytes());
+                response.headers().set(HttpHeaderNames.CONTENT_LENGTH, content.readableBytes());
 
                 ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
                 ctx.close();
@@ -90,6 +88,12 @@ public class HttpServer {
             ctx.flush();
         }
 
+        /**
+         * channel建立
+         *
+         * @param ctx
+         * @throws Exception
+         */
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             System.out.println("3 channelActive");
@@ -102,6 +106,12 @@ public class HttpServer {
             super.channelRegistered(ctx);
         }
 
+        /**
+         * 连接建立
+         *
+         * @param ctx
+         * @throws Exception
+         */
         @Override
         public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
             System.out.println("1 handlerAdded");
