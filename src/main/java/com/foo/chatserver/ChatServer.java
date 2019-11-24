@@ -11,6 +11,8 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
@@ -25,6 +27,7 @@ public class ChatServer {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(boss, work)
                     .channel(NioServerSocketChannel.class)
+                    .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new ChatServerInitializer());
             ChannelFuture channelFuture = bootstrap.bind(8899).sync();
             channelFuture.channel().closeFuture().sync();
@@ -68,7 +71,7 @@ public class ChatServer {
             channelGroup.forEach(ch -> {
                 if (ch == channel) {
                     // 自己
-                    ch.writeAndFlush("【自己】-" + msg);
+                    ch.writeAndFlush("【自己】-" + msg + "\n");
                 } else {
                     // 其它client
                     ch.writeAndFlush(channel.remoteAddress() + "- 发送消息：" + msg + "\n");

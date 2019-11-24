@@ -25,7 +25,7 @@ public class HttpServer {
             work = new NioEventLoopGroup();
 
             bootstrap.group(boss, work)
-                    .handler(new LoggingHandler(LogLevel.DEBUG)) // 配置handler日志级别
+                    .handler(new LoggingHandler(LogLevel.INFO)) // 配置handler日志级别
                     .channel(NioServerSocketChannel.class)// 配置使用的channel
                     .childHandler(new HttpServerInitializer()); // 配置初始化器
             ChannelFuture channelFuture = bootstrap.bind(port).sync();
