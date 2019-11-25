@@ -1,4 +1,4 @@
-package com.foo;
+package com.foo.httpserver;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -12,7 +12,6 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.CharsetUtil;
 
-import java.net.InetSocketAddress;
 import java.net.URI;
 
 public class HttpServer {
@@ -28,7 +27,7 @@ public class HttpServer {
             work = new NioEventLoopGroup();
 
             bootstrap.group(boss, work)
-                    .handler(new LoggingHandler(LogLevel.DEBUG)) // 配置handler日志级别
+                    .handler(new LoggingHandler(LogLevel.INFO)) // 配置handler日志级别
                     .channel(NioServerSocketChannel.class)// 配置使用的channel
                     .childHandler(new HttpServerInitializer()); // 配置初始化器
             ChannelFuture channelFuture = bootstrap.bind(port).sync();
@@ -96,6 +95,12 @@ public class HttpServer {
             ctx.flush();
         }
 
+        /**
+         * channel建立
+         *
+         * @param ctx
+         * @throws Exception
+         */
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             System.out.println("3 channelActive");
@@ -108,6 +113,12 @@ public class HttpServer {
             super.channelRegistered(ctx);
         }
 
+        /**
+         * 连接建立
+         *
+         * @param ctx
+         * @throws Exception
+         */
         @Override
         public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
             System.out.println("1 handlerAdded");
