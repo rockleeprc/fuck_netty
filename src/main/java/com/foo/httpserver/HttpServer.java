@@ -16,21 +16,20 @@ import java.net.URI;
 
 public class HttpServer {
     public static void main(String[] args) {
-        ServerBootstrap bootstrap = null;
         EventLoopGroup boss = null;
         EventLoopGroup work = null;
         int port = 8899;
 
         try {
-            bootstrap = new ServerBootstrap();
             boss = new NioEventLoopGroup();
             work = new NioEventLoopGroup();
 
+            ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(boss, work)
                     .handler(new LoggingHandler(LogLevel.INFO)) // 配置handler日志级别
-                    .channel(NioServerSocketChannel.class)// 配置使用的channel
+                    .channel(NioServerSocketChannel.class) // 配置使用的channel
                     .childHandler(new HttpServerInitializer()); // 配置初始化器
-            ChannelFuture channelFuture = bootstrap.bind(port).sync();
+            ChannelFuture channelFuture = bootstrap.bind(port).sync(); // 异步调用，但是sync()阻塞等待，知道绑定完成
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -46,6 +45,9 @@ public class HttpServer {
 
     /**
      * 初始化器，初始化所需要的组件
+     * <p>
+     * 当一个新的连接被接受时，一个新的子 Channel 将会被创建，
+     * 而 ChannelInitializer 将会把一个你的Handler 的实例添加到该 Channel 的 ChannelPipeline 中
      */
     private static class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
 
@@ -61,9 +63,20 @@ public class HttpServer {
 
     /**
      * 请求处理器，初始化器所需要的组件
+     * <p>
+     * Sharable：标识一个ChannelHandler可以被多个Channel安全地共享，
+     * 不然只能在ChannelInitializer中使用new HttpServerHandler()，每次都新生成一个实例
      */
+    @ChannelHandler.Sharable
     private static class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
+        /**
+         * 当接收到一条消息时被调用
+         *
+         * @param ctx
+         * @param msg
+         * @throws Exception
+         */
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
             System.out.println("4 channelRead0");
@@ -89,14 +102,21 @@ public class HttpServer {
             }
         }
 
+        /**
+         * 通知ChannelInboundHandler最后一次对channelRead()的调用是当前批量读取中的最后一条消息
+         *
+         * @param ctx
+         * @throws Exception
+         */
         @Override
         public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
             System.out.println("5 channelReadComplete");
-            ctx.flush();
+            // 远程节点，并且关闭该Channel
+            ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         }
 
         /**
-         * channel建立
+         * 在client的连接已经建立之后将被调用
          *
          * @param ctx
          * @throws Exception
@@ -135,6 +155,24 @@ public class HttpServer {
         public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
             System.out.println("7 channelUnregistered");
             super.channelUnregistered(ctx);
+        }
+
+        /**
+         * 在读取操作期间，有异常抛出时会调用
+         * <p>
+         * 每个 Channel 都拥有一个与之相关联的 ChannelPipeline，其持有一个 ChannelHandler 的实例链。
+         * 在默认的情况下，ChannelHandler 会把对它的方法的调用转发给链中的下一个 ChannelHandler。
+         * 因此，如果 exceptionCaught()方法没有被该链中的某处实现，那么所接收的异常将会被传递到 ChannelPipeline 的尾端并被记录。
+         * 为此，你的应用程序应该提供至少有一个实现了exceptionCaught()方法的 ChannelHandler。
+         *
+         * @param ctx
+         * @param cause
+         * @throws Exception
+         */
+        @Override
+        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+            cause.printStackTrace();
+            ctx.close();
         }
     }
 }
