@@ -14,6 +14,7 @@ import io.netty.util.CharsetUtil;
 
 import java.net.URI;
 
+
 public class HttpServer {
     public static void main(String[] args) {
         EventLoopGroup boss = null;
@@ -46,8 +47,8 @@ public class HttpServer {
     /**
      * 初始化器，初始化所需要的组件
      * <p>
-     * 当一个新的连接被接受时，一个新的子 Channel 将会被创建，
-     * 而 ChannelInitializer 将会把一个你的Handler 的实例添加到该 Channel 的 ChannelPipeline 中
+     * 当一个新的连接被接受时，一个新的子Channel将会被创建，
+     * 而ChannelInitializer将会把一个新Handler的实例添加到该Channel的ChannelPipeline中
      */
     private static class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
 
