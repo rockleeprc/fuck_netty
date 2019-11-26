@@ -57,7 +57,7 @@ public class HttpServer {
             ChannelPipeline pipeline = ch.pipeline();
             // 将组建添加到ChannelPipeline的最后
             pipeline.addLast("httpServerCodec", new HttpServerCodec());// http 编解码
-            pipeline.addLast("httpAggregator", new HttpObjectAggregator(512 * 1024)); // http 消息聚合器                                                                     512*1024为接收的最大contentlength
+            pipeline.addLast("httpAggregator", new HttpObjectAggregator(512 * 1024)); // http 消息聚合器512*1024为接收的最大contentlength
             pipeline.addLast("httpServerHandle", new HttpServerHandler());// 自定义请求处理器
         }
     }
