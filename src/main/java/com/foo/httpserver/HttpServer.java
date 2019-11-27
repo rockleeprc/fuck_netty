@@ -15,6 +15,8 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.CharsetUtil;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class HttpServer {
@@ -64,6 +66,9 @@ public class HttpServer {
             pipeline.addLast("httpServerCodec", new HttpServerCodec());// http 编解码
             pipeline.addLast("httpAggregator", new HttpObjectAggregator(512 * 1024)); // http 消息聚合器512*1024为接收的最大contentlength
             pipeline.addLast("httpServerHandle", new HttpServerHandler());// 自定义请求处理器
+
+            List<String> names = pipeline.names();
+            System.out.println(Arrays.toString(names.toArray()));
         }
     }
 
