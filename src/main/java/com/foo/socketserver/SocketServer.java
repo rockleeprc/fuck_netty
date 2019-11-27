@@ -59,7 +59,19 @@ public class SocketServer {
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
             System.out.println(ctx.channel().remoteAddress() + "-" + msg);
-            ctx.channel().writeAndFlush("from server:" + UUID.randomUUID());
+            ChannelFuture channelFuture = ctx.channel().writeAndFlush("from server:" + UUID.randomUUID());
+            channelFuture.addListener(new ChannelFutureListener() {
+                /**
+                 * 写操作完成后收到通知
+                 * @param future
+                 * @throws Exception
+                 */
+                @Override
+                public void operationComplete(ChannelFuture future) throws Exception {
+                    future.isSuccess();
+                    future.cause().printStackTrace();
+                }
+            });
         }
 
         /**

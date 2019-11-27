@@ -4,6 +4,8 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -24,11 +26,14 @@ public class HttpServer {
         try {
             boss = new NioEventLoopGroup();
             work = new NioEventLoopGroup();
+//            boss = new EpollEventLoopGroup();// 使用linux提供的epoll，windwos无法执行
+//            work = new EpollEventLoopGroup(); // IllegalStateException: Only supported on Linux
 
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(boss, work)
                     .handler(new LoggingHandler(LogLevel.INFO)) // 配置handler日志级别
                     .channel(NioServerSocketChannel.class) // 配置使用的channel
+//                    .channel(EpollServerSocketChannel.class) // 使用linux提供的epoll
                     .childHandler(new HttpServerInitializer()); // 配置初始化器
             ChannelFuture channelFuture = bootstrap.bind(port).sync(); // 异步调用，但是sync()阻塞等待，知道绑定完成
             channelFuture.channel().closeFuture().sync();
@@ -117,7 +122,7 @@ public class HttpServer {
         }
 
         /**
-         * 在client的连接已经建立之后将被调用
+         * Channel处于活动状态（已经连接到它的远程节点）。它现在可以接收和发送数据了
          *
          * @param ctx
          * @throws Exception
@@ -128,6 +133,24 @@ public class HttpServer {
             super.channelActive(ctx);
         }
 
+        /**
+         * Channel 没有连接到远程节点
+         *
+         * @param ctx
+         * @throws Exception
+         */
+        @Override
+        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+            System.out.println("6 channelInactive");
+            super.channelInactive(ctx);
+        }
+
+        /**
+         * Channel 已经被注册到了 EventLoop
+         *
+         * @param ctx
+         * @throws Exception
+         */
         @Override
         public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
             System.out.println("2 channelRegistered");
@@ -135,7 +158,20 @@ public class HttpServer {
         }
 
         /**
-         * 连接建立
+         * Channel 已经被创建，但还未注册到 EventLoop
+         *
+         * @param ctx
+         * @throws Exception
+         */
+        @Override
+        public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+            System.out.println("7 channelUnregistered");
+            super.channelUnregistered(ctx);
+        }
+
+
+        /**
+         * 当把 ChannelHandler 添加到 ChannelPipeline 中时被调用
          *
          * @param ctx
          * @throws Exception
@@ -146,20 +182,20 @@ public class HttpServer {
             super.handlerAdded(ctx);
         }
 
+        /**
+         * 当从 ChannelPipeline 中移除 ChannelHandler 时被调用
+         *
+         * @param ctx
+         * @throws Exception
+         */
         @Override
-        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-            System.out.println("6 channelInactive");
-            super.channelInactive(ctx);
+        public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+            super.handlerRemoved(ctx);
         }
 
-        @Override
-        public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-            System.out.println("7 channelUnregistered");
-            super.channelUnregistered(ctx);
-        }
 
         /**
-         * 在读取操作期间，有异常抛出时会调用
+         * 当处理过程中在 ChannelPipeline 中有错误产生时被调用
          * <p>
          * 每个 Channel 都拥有一个与之相关联的 ChannelPipeline，其持有一个 ChannelHandler 的实例链。
          * 在默认的情况下，ChannelHandler 会把对它的方法的调用转发给链中的下一个 ChannelHandler。
