@@ -109,7 +109,7 @@ public class HttpServer {
                 response.headers().set(HttpHeaderNames.CONTENT_LENGTH, content.readableBytes());
 
                 ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
-                ctx.close();
+//                ctx.close();
             }
         }
 
