@@ -9,7 +9,7 @@ import java.net.Socket;
  * 处理请求逻辑交给另外一个线程处理
  * 可以同时处理多个请求
  */
-public class BioServer2 {
+public class BioServerMutiThread {
     public static void main(String[] args) {
 
         try (ServerSocket serverSocket = new ServerSocket(8899)) {

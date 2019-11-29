@@ -61,9 +61,9 @@ public class NioServerDriver {
 
                             } catch (IOException e) {
                                 e.printStackTrace();
+                            } finally {
                                 key.cancel();
                                 key.channel().close();
-                            } finally {
                                 buffer.clear();
                             }
                         }
