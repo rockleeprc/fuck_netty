@@ -1,4 +1,4 @@
-package com.foo.release;
+package com.foo.netty.release;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
