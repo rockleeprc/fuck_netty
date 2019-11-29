@@ -38,6 +38,8 @@ public class BioServerThreadPool {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            threadpool.shutdown();
         }
     }
 }
