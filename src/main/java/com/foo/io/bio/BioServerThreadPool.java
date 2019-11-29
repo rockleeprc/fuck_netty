@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
-
-public class BioServerMutiThread {
+public class BioServerThreadPool {
     public static void main(String[] args) {
-
+        ThreadPoolExecutor threadpool = new ThreadPoolExecutor(10, 10, 5, TimeUnit.SECONDS, new LinkedBlockingDeque<>(10));
         try (ServerSocket serverSocket = new ServerSocket(8899)) {
             while (true) {
                 System.out.println(Thread.currentThread().getId() + "-serversocket.accept");
@@ -32,7 +34,7 @@ public class BioServerMutiThread {
                         e.printStackTrace();
                     }
                 };
-                new Thread(handler).start();
+                threadpool.execute(handler);
             }
         } catch (IOException e) {
             e.printStackTrace();

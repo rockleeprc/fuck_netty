@@ -5,9 +5,7 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * 同时只能接收一个请求
- */
+
 public class BioServerSingleThread {
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(8899)) {
