@@ -7,6 +7,7 @@ import java.net.Socket;
 
 /**
  * 处理请求逻辑交给另外一个线程处理
+ * 可以同时处理多个请求
  */
 public class BioServer2 {
     public static void main(String[] args) {
@@ -26,6 +27,7 @@ public class BioServer2 {
                             if (is.read(buf) != -1) {
                                 System.out.println(new String(buf, 0, buf.length));
                             } else {
+                                // 防御
                                 break;
                             }
                         }
