@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class NioClientDriver {
 
     public static void main(String[] args) {
-        NioClient client = new NioClient(9999);
+        NioClient client = new NioClient(8899);
         client.start();
 
     }
