@@ -21,7 +21,7 @@ public class NioServer {
             Selector selector = Selector.open();
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-            while (true) {
+            for (; ; ) {
                 if (selector.select(1000) == 0) {
                     System.out.println("等待1s，无连接");
                     continue;
@@ -42,7 +42,7 @@ public class NioServer {
                         ByteBuffer buffer = (ByteBuffer) selectionKey.attachment();
                         SocketChannel channel = (SocketChannel) selectionKey.channel();
                         int length = channel.read(buffer);
-                        System.out.println("服务器端收到消息：" + new String(buffer.array(),0,length));
+                        System.out.println("服务器端收到消息：" + new String(buffer.array(), 0, length));
                     }
                     iterator.remove();
                 }
