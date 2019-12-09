@@ -60,6 +60,8 @@ public class HttpServer {
         @Override
         protected void initChannel(SocketChannel ch) throws Exception {
             ChannelPipeline pipeline = ch.pipeline();
+            // 使用任务队列提交任务
+            pipeline.channel().eventLoop().execute(() -> System.out.println("aa"));
             // 将组建添加到ChannelPipeline的最后
             pipeline.addLast("httpServerCodec", new HttpServerCodec());// http 编解码
             pipeline.addLast("httpAggregator", new HttpObjectAggregator(512 * 1024)); // http 消息聚合器512*1024为接收的最大contentlength
