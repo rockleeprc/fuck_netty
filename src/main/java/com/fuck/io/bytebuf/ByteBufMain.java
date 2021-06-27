@@ -1,4 +1,4 @@
-package com.fuck.netty.bytebuf;
+package com.fuck.io.bytebuf;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

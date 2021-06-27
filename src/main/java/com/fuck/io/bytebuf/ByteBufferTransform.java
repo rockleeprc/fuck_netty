@@ -1,4 +1,4 @@
-package com.fuck.netty.bytebuf;
+package com.fuck.io.bytebuf;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;

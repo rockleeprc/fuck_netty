@@ -9,31 +9,32 @@ import java.util.Scanner;
 public class NioClientDriver {
 
     public static void main(String[] args) {
-        NioClient client = new NioClient(8899);
+        NioClient client = new NioClient(9999);
         client.start();
 
     }
 
-    private static  class NioClient{
+    private static class NioClient {
         private Integer port;
 
-        public NioClient(int port){
+        public NioClient(int port) {
             this.port = port;
         }
-        public void start(){
-            ByteBuffer buffer = ByteBuffer.allocate(1024*1024*1);
+
+        public void start() {
+            ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024 * 1);
             SocketChannel channel = null;
             try {
                 channel = SocketChannel.open();
                 channel.connect(new InetSocketAddress(port));
                 Scanner scanner = new Scanner(System.in);
-                while(true) {
+                while (true) {
                     System.out.print("put message to server:");
                     String message = scanner.nextLine();
-                    if(message==null || message.length()<=0){
+                    if (message == null || message.length() <= 0) {
                         continue;
                     }
-                    if("exit".equals(message)){
+                    if ("exit".equals(message)) {
                         break;
                     }
                     buffer.clear();
@@ -44,7 +45,7 @@ public class NioClientDriver {
 
                     buffer.clear();
                     int length = channel.read(buffer);
-                    if(length<=0){
+                    if (length <= 0) {
                         continue;
                     }
                     buffer.flip();
