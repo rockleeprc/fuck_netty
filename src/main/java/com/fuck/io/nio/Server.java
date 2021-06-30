@@ -20,6 +20,7 @@ public class Server {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.configureBlocking(false);
             serverSocketChannel.bind(new InetSocketAddress(9999));
+
             // 创建selector，管理多个channel
             selector = Selector.open();
             // 将ServerSocketChannel注册到selector上
@@ -79,8 +80,8 @@ public class Server {
         ServerSocketChannel channel = (ServerSocketChannel) key.channel();
         SocketChannel socketChannel = channel.accept();
         socketChannel.configureBlocking(false);
-        SelectionKey socketChannelKey = socketChannel.register(selector, 0, null);
-        socketChannelKey.interestOps(SelectionKey.OP_READ);
+        SelectionKey serverSocketChannel = socketChannel.register(selector, 0, null);
+        serverSocketChannel.interestOps(SelectionKey.OP_READ);
     }
 
     public static void readable(Selector selector, SelectionKey key) throws IOException {
