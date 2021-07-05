@@ -1,4 +1,4 @@
-package org.fuck.io.nio;
+package org.fuck.netty;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
