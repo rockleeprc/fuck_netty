@@ -10,7 +10,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 
-public class EchoServer {
+public class SimpleEchoServer {
     public static void main(String[] args) {
         NioEventLoopGroup loopGroup = new NioEventLoopGroup();
         ServerBootstrap bootstrap = new ServerBootstrap();
