@@ -72,7 +72,13 @@ public class SimpleEchoServer {
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             ByteBuf buf = (ByteBuf) msg;
             log.debug("server receive:{}", buf.toString(CharsetUtil.UTF_8));
-            ctx.write(msg);
+            ctx.write(msg).addListener((ChannelFutureListener) future -> {
+                if (future.isSuccess()) {
+                    log.debug("write success");
+                } else {
+                    log.debug("write fail");
+                }
+            });
         }
 
         @Override

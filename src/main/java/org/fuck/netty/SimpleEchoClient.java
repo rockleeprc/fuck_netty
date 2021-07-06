@@ -57,7 +57,14 @@ public class SimpleEchoClient {
 
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
-            ctx.writeAndFlush(Unpooled.copiedBuffer("hello netty", CharsetUtil.UTF_8));
+            ChannelFuture channelFuture = ctx.writeAndFlush(Unpooled.copiedBuffer("hello netty", CharsetUtil.UTF_8));
+            channelFuture.addListener((ChannelFutureListener) future -> {
+                if (future.isSuccess()) {
+                    log.debug("write success");
+                } else {
+                    log.debug("write fail");
+                }
+            });
         }
 
         /**
