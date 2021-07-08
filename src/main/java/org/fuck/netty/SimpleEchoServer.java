@@ -47,7 +47,7 @@ public class SimpleEchoServer {
 
             // 异步地绑定服务器; 调用 sync()方法阻塞 等待直到绑定完成
             ChannelFuture channelFuture = bootstrap.bind().sync();
-            // 获取 Channel 的 CloseFuture，并且阻塞当前线 程直到它完成
+            // 获取 Channel 的 CloseFuture，并且阻塞当前线程直到它完成
             channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
             e.printStackTrace();

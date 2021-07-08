@@ -50,7 +50,7 @@ public class PipelineExample {
                                             // 只有write才会调用ChannelOutboundHandle
 
                                             // channel.write从tail开始向前调用outbound
-                                            //ctx.channel().writeAndFlush(Unpooled.copiedBuffer("hello netty", CharsetUtil.UTF_8));
+                                            ctx.channel().writeAndFlush(Unpooled.copiedBuffer("hello netty", CharsetUtil.UTF_8));
 
                                             // ctx.write是从当前handler开始向前调用outbound，c3前没有outbound
                                             ctx.writeAndFlush(Unpooled.copiedBuffer("hello netty", CharsetUtil.UTF_8));
