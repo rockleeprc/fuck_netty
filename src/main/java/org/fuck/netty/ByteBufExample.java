@@ -1,4 +1,4 @@
-package org.fuck.netty.bytebuf;
+package org.fuck.netty;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ByteBufExample {
     public static void main(String[] args) {
-
     }
 
     public static void t2() {
