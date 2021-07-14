@@ -83,7 +83,7 @@ public class PipelineExample {
             // 异步地绑定服务器; 调用 sync()方法阻塞 等待直到绑定完成
             ChannelFuture channelFuture = bootstrap.bind().sync();
             // 获取 Channel 的 CloseFuture，并且阻塞当前线 程直到它完成
-//            channelFuture.channel().closeFuture().sync();
+//            channelFuture.channel().closeFuture().sync(); // 异步转同步
             channelFuture.channel().closeFuture().addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture future) throws Exception {
@@ -91,12 +91,12 @@ public class PipelineExample {
                     log.debug("shutdownGracefullys");
                     loopGroup.shutdownGracefully();
                 }
-            });
+            }); // 异步等待执行结果
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            //  关闭 EventLoopGroup， 释放所有的资源
-            //loopGroup.shutdownGracefully();
+            // 关闭 EventLoopGroup， 释放所有的资源
+            // loopGroup.shutdownGracefully();
         }
     }
 }
