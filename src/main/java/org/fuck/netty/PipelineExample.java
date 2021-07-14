@@ -53,7 +53,7 @@ public class PipelineExample {
                                             ctx.channel().writeAndFlush(Unpooled.copiedBuffer("hello netty", CharsetUtil.UTF_8));
 
                                             // ctx.write是从当前handler开始向前调用outbound，c3前没有outbound
-                                            ctx.writeAndFlush(Unpooled.copiedBuffer("hello netty", CharsetUtil.UTF_8));
+                                            //ctx.writeAndFlush(Unpooled.copiedBuffer("hello netty", CharsetUtil.UTF_8));
                                         }
                                     })
                                     .addLast("out c4", new ChannelOutboundHandlerAdapter() {
